@@ -67,6 +67,7 @@ export default {
 		const avatar = renderToString(
 			React.createElement(Avatar, {
 				size: 200,
+				square: true,
 				name,
 				variant,
 				colors: DEFAULT_COLORS,

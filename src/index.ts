@@ -49,9 +49,20 @@ export default {
 		if (url.pathname === '/favicon.ico') {
 			return new Response(null, { status: 204 });
 		}
+		let sizeStr = url.searchParams.get('size');
+		if (!sizeStr || /^\d{1,4}$/.test(sizeStr) === false) {
+			sizeStr = '256';
+		}
+		const size = parseInt(sizeStr, 10);
 		let name = '';
 		if (url.pathname.length > 1) {
-			name = url.pathname.substring(1, 128);
+			if (url.pathname.length > 128) {
+				name = url.pathname.substring(1, 128);
+			} else if (url.pathname.at(-1) === '/') {
+				name = url.pathname.substring(1, url.pathname.length - 1);
+			} else {
+				name = url.pathname.substring(1);
+			}
 		} else {
 			return new Response('Please provide a name', { status: 400 });
 		}
@@ -66,7 +77,7 @@ export default {
 		const variant = variantList[number % variantList.length];
 		const avatar = renderToString(
 			React.createElement(Avatar, {
-				size: 200,
+				size,
 				square: true,
 				name,
 				variant,
